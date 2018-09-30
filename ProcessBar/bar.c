@@ -2,7 +2,7 @@
 #include<unistd.h>
 #include<math.h>
 #define Black 40
-#define White 42
+#define White 46
 #define Blue 44
 #define Green 47
 void printbp(int color,size_t n)
