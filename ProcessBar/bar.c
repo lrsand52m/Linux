@@ -27,7 +27,7 @@ int main()
 		printbp(Blue,B);
 		printbp(White,W);
 		printbp(Black,100-G-B-W);
-		printf("[%d%%][%c]\r",i,label[i%4]);
+		printf("[%3d%%][%c]\r",i,label[i%4]);
 		fflush(stdout);
 		usleep(100000);
      }
