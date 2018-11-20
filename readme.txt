@@ -2,4 +2,4 @@ LRS's Linux learning process:
     9-30 add the code of ProcessBar
          add the code of SHM
          add the code of msg
-         add the code of signal
+         add the code of signal/test sigchild pending sleep
