@@ -20,12 +20,33 @@ unsigned int mysleep(unsigned int secs)
     sigaction(SIGALRM,&old,NULL);
     return unslept;
 }
-
+unsigned int Mysleep(unsigned int secs)
+{
+    struct sigaction new,old;
+    sigset_t newmask,oldmask,suspmask;
+    unsigned int unslept;
+    new.sa_handler = sig_alarm;
+    sigemptyset(&new.sa_mask);
+    new.sa_flags = 0;
+    sigaction(SIGALRM,&new,&old);
+    sigemptyset(&newmask);
+    sigaddset(&newmask,SIGALRM);
+    sigprocmask(SIG_BLOCK,&newmask,&oldmask);
+    alarm(secs);
+    suspmask = oldmask;
+    sigdelset(&suspmask,SIGALRM);
+    sigsuspend(&suspmask);
+    unslept = alarm(0);
+    sigaction(SIGALRM,&old,NULL);
+    sigprocmask(SIG_SETMASK,&oldmask,NULL);
+    return unslept;
+}
 int main()
 {
     while(1)
     {
-        printf("%lf seconds passed\n",5.0-mysleep(5));
+        printf("%d seconds passed\n",2-mysleep(2));
+        printf("%d seconds passed\n",3-Mysleep(3));
     }
     return 0;
 }
