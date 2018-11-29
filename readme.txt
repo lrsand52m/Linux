@@ -3,3 +3,4 @@ LRS's Linux learning process:
          add the code of SHM
          add the code of msg
          add the code of signal/test sigchild pending sleep
+	 add the code of phread/rwlock/cond/mutex
