@@ -5,6 +5,7 @@
 #include <queue>
 #include <pthread.h>
 #include <unistd.h>
+#include <stdlib.h>
 using namespace std;
 
 typedef int (*cal_t)(int ,int);

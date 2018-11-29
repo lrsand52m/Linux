@@ -10,6 +10,7 @@ void *consume_routine(void *arg)
     RingQueue *q = (RingQueue*)arg;
     for(;;){
         q->PopData(d);
+	usleep(rand()%200000+100000);
     }
 }
 void *product_routine(void *arg)
@@ -19,7 +20,7 @@ void *product_routine(void *arg)
     for(;;){
         int d = rand()%100 + 1;
         q->PushData(d);
-        sleep(1);
+        usleep(rand()%200000+100000);
     }
 }
 int main()

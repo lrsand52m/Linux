@@ -11,12 +11,12 @@ int main()
 {
     ThreadPool *tp = new ThreadPool(NUM);
     tp->InitThreadPool();
-
+    srand((unsigned int )time(NULL));
     int count = 1;
     while(1)
     {
         sleep(1);
-        Task t(count, count-1, add);
+        Task t(rand()%count, rand()%count-1, add);
         tp->AddTask(t);
         count++;
     }

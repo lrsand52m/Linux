@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <pthread.h>
-
+#include <stdlib.h>
 using namespace std;
 
 int book = 0;
@@ -13,7 +13,7 @@ void *Reader(void *arg)
         pthread_rwlock_rdlock(&rwlock);
         cout << "read book: " << book << endl;
         pthread_rwlock_unlock(&rwlock);
-        usleep(300000);
+        usleep(rand()%300000+100000);
     }
 }
 void *Writer(void *arg)
@@ -29,6 +29,7 @@ void *Writer(void *arg)
 
 int main()
 {
+    srand((unsigned int)time(NULL));
     pthread_rwlock_init(&rwlock, NULL);
 
     pthread_t r,w;
