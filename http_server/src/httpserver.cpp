@@ -1,8 +1,13 @@
+#pragma once 
 #include"threadpool.hpp"
+#include"upload.hpp"
 #include<sys/socket.h>
 #include<unistd.h>
+#include<iostream>
 #include<netinet/ip.h>
 #include<arpa/inet.h>
+#include<sys/types.h>
+#include<sys/stat.h>
 #define MAX_LISTEN 5
 #define MAX_THREAD 4
 class HttpServer
@@ -19,7 +24,7 @@ private:
         RequestInfo info;
         HttpRequest req(sock);
         HttpResponse rsp(sock);
-        if(!req.RecvHttpheader(info))
+        if(!req.RecvHttpHeader(info))
         {
             goto out;
         }
@@ -48,13 +53,13 @@ public:
     bool Init(std::string &ip,int port)//完成服务端的建立，线程池的初始化
     {
         _serv_sock = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
-        if(_ser_sock)
+        if(_serv_sock<0)
         {
-            LOG("sock error");
+            LOG("sock error\n");
             return false;
         }
         sockaddr_in laddr;
-        laddr.sin_famliy = AF_INET;
+        laddr.sin_family = AF_INET;
         laddr.sin_port = htons(port);//不能使用htonl
         laddr.sin_addr.s_addr = inet_addr(ip.c_str());
         socklen_t len = sizeof(sockaddr_in);
@@ -63,9 +68,9 @@ public:
             LOG("bind error\n");
             return false;
         }
-        if(listen(_servsock,MAX_LISTEN)<0)
+        if(listen(_serv_sock,MAX_LISTEN)<0)
         {
-            LOG("listen error");
+            LOG("listen error\n");
             return false;
         }
         _tp = new ThreadPool(MAX_THREAD);
@@ -77,6 +82,7 @@ public:
         if(_tp->Init() == false)
         {
             LOG("threadpool init error\n");
+            return false;
         }
         return true;
     }
@@ -84,13 +90,18 @@ public:
     {
         while(1)
         {
-            sockaddr_in cli;
+            struct sockaddr_in cli;
             socklen_t len = sizeof(sockaddr_in);
-            int sock = accept(_serv_sock,(sockaddr*)&addr,&len);
+            int sock = accept(_serv_sock,(struct sockaddr*)&cli,&len);
             if(sock<0)
             {
-                LOG("accept error");
+                LOG("accept error\n");
+                usleep(1000000);
                 continue;
+            }
+            else 
+            {
+                std::cout<"a new connection!\n";
             }
             HttpTask ht(sock,HttpHandler);
             _tp->PushTask(ht);
@@ -99,3 +110,17 @@ public:
     }
     
 };
+int main(int argc, char* argv[])
+{
+    if(argc!=3)
+    {
+        std::cout<<"Usage: "<<argv[0]<<" ip"<<" port"<<std::endl;
+        return 0;
+    }
+    HttpServer hs;
+    std::string ip = argv[1];
+    int port = atoi(argv[2]);
+    if(hs.Init(ip,port))
+    hs.Start();
+    return 0;
+}

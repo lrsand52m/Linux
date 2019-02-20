@@ -1,6 +1,7 @@
 #pragma once 
 #include<queue>
 #include<stdio.h>
+#include<unistd.h>
 #include<iostream>
 #include<pthread.h>
 using std::string;
@@ -141,14 +142,8 @@ public:
         while(_cur_thr>0)
         {
             WakeupAll();
-            volatile int i = 1000;
-            while(i--);
         }
         return true;
     }
 };
 
-int main()//for test 
-{
-    return 0;
-}
